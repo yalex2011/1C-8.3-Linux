@@ -1,0 +1,58 @@
+#!/bin/bash
+# chkconfig: 2345 20 80
+# description: Description comes here....
+
+# Source function library.
+#. /etc/init.d/functions
+
+SETCOLOR_SUCCESS="echo -en \\033[1;32m"
+SETCOLOR_FAILURE="echo -en \\033[1;31m"
+SETCOLOR_NORMAL="echo -en \\033[0;39m"
+
+MACHINE_TYPE=`uname -m`
+if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+  # 64-bit stuff here
+  platform1c="x86_64";
+else
+  # 32-bit stuff here
+  platform1c="i386";
+fi
+
+start() {
+    # code to start app comes here
+    echo -n "Starting RAS: "
+    su -s /bin/bash - usr1cv8 -c "/opt/1C/v8.3/\"$platform1c\"/ras cluster --daemon"
+    $SETCOLOR_SUCCESS
+    echo "OK"
+    $SETCOLOR_NORMAL
+}
+
+stop() {
+    # code to stop app comes here
+    echo -n "Stopping RAS: "
+    pkill ras
+    $SETCOLOR_SUCCESS
+    echo "ok"
+    $SETCOLOR_NORMAL
+}
+
+case "$1" in
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+       # code to check status of app comes here
+       netstat -nlp | grep ras
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0
