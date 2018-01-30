@@ -1,0 +1,22 @@
+---
+
+- name: Copy init files
+  # become: true
+  copy:
+    src: ./roles/create_ras_daemon/files/
+    dest: /etc/init.d/
+
+- name: Chemod ras file
+  # become: true
+  file:
+    path: /etc/init.d/ras
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Enable autostart and run
+  # become: true
+  systemd:
+    name: ras
+    state: started
+    enabled: True
